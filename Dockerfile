@@ -1,12 +1,12 @@
-FROM node:lts-alpine as build-stage
-WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
-RUN npm run build
+# 基础镜像
+FROM node:lts-alpine
 
-# production stage
-FROM nginx:stable-alpine as production-stage
-COPY --from=build-stage /app/dist /usr/share/nginx/html
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+# 设置项目目录
+WORKDIR /app
+
+# 安装依赖
+COPY package.json .
+RUN yarn install
+
+# 启动项目
+CMD ["yarn", "serve"]
